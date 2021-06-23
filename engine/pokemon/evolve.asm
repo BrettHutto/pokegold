@@ -88,15 +88,15 @@ EvolveAfterBattle_MasterLoop:
 	jr z, .happiness
 
 ; EVOLVE_STAT
-	ld a, [wTempMonLevel]
-	cp [hl]
-	jp c, .dont_evolve_1
+	ld a, [wTempMonLevel]		;loads the level of the pokemon
+	cp [hl]						;compares level it's supposed to evolve at with level it's at
+	jp c, .dont_evolve_1		
 
 	call IsMonHoldingEverstone
 	jp z, .dont_evolve_1
 
-	push hl
-	ld de, wTempMonAttack
+	push hl						;pushing the address of the level onto the stack
+	ld de, wTempMonAttack		;loads the TempMonAttack
 	ld hl, wTempMonDefense
 	ld c, 2
 	call CompareBytes
@@ -142,29 +142,26 @@ EvolveAfterBattle_MasterLoop:
 	jr .proceed
 
 .trade
-	ld a, [wLinkMode]
-	and a
-	jp z, .dont_evolve_2
+	ld a, [hl]						;level needed into a
+	ld b, a							;level needed into b
+	ld a, [wTempMonLevel]			;cur level into a
+	cp b							;compare
+	jp c, .dont_evolve_3			;don't evolve
 
 	call IsMonHoldingEverstone
-	jp z, .dont_evolve_2
-
-	ld a, [hli]
-	ld b, a
-	inc a
-	jr z, .proceed
-
-	ld a, [wLinkMode]
-	cp LINK_TIMECAPSULE
-	jp z, .dont_evolve_3
-
-	ld a, [wTempMonItem]
-	cp b
-	jp nz, .dont_evolve_3
-
-	xor a
-	ld [wTempMonItem], a
-	jr .proceed
+	jp z, .dont_evolve_2			;don't evolve if holding everstone
+	
+	inc hl							;goes from level to item
+	ld a, [hl]						;item needed into a, inc hl since this is the last we need it
+	ld b, a							;item needed into b
+	ld a, [wTempMonItem]			;item held into a
+	cp b							;compare a to b
+	jp nz, .dont_evolve_2			;if not the same go to .dont_evolve_2
+	inc hl
+	
+	xor a							;reset a
+	ld [wTempMonItem], a			;make pkmn hold no item
+	jp .proceed						;proceed
 
 .item
 	ld a, [hli]
@@ -202,7 +199,7 @@ EvolveAfterBattle_MasterLoop:
 	ld [wEvolutionNewSpecies], a
 	ld a, [wCurPartyMon]
 	ld hl, wPartyMonNicknames
-	call GetNickname
+	call GetNick
 	call CopyName1
 	ld hl, EvolvingText
 	call PrintText
@@ -219,7 +216,6 @@ EvolveAfterBattle_MasterLoop:
 	ld a, $1
 	ldh [hBGMapMode], a
 	call ClearSprites
-
 	call EvolutionAnimation
 
 	push af
