@@ -90,7 +90,7 @@ EvolveAfterBattle_MasterLoop:
 ; EVOLVE_STAT
 	ld a, [wTempMonLevel]		;loads the level of the pokemon
 	cp [hl]						;compares level it's supposed to evolve at with level it's at
-	jp c, .dont_evolve_1		
+	jp c, .dont_evolve_1
 
 	call IsMonHoldingEverstone
 	jp z, .dont_evolve_1
@@ -150,7 +150,7 @@ EvolveAfterBattle_MasterLoop:
 
 	call IsMonHoldingEverstone
 	jp z, .dont_evolve_2			;don't evolve if holding everstone
-	
+
 	inc hl							;goes from level to item
 	ld a, [hl]						;item needed into a, inc hl since this is the last we need it
 	ld b, a							;item needed into b
@@ -158,7 +158,7 @@ EvolveAfterBattle_MasterLoop:
 	cp b							;compare a to b
 	jp nz, .dont_evolve_2			;if not the same go to .dont_evolve_2
 	inc hl
-	
+
 	xor a							;reset a
 	ld [wTempMonItem], a			;make pkmn hold no item
 	jp .proceed						;proceed
@@ -199,7 +199,7 @@ EvolveAfterBattle_MasterLoop:
 	ld [wEvolutionNewSpecies], a
 	ld a, [wCurPartyMon]
 	ld hl, wPartyMonNicknames
-	call GetNick
+	call GetNickname
 	call CopyName1
 	ld hl, EvolvingText
 	call PrintText
