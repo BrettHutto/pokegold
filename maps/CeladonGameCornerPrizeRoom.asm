@@ -2,6 +2,9 @@ CELADONGAMECORNERPRIZEROOM_TM32_COINS EQU 1500
 CELADONGAMECORNERPRIZEROOM_TM29_COINS EQU 3500
 CELADONGAMECORNERPRIZEROOM_TM15_COINS EQU 7500
 CELADONGAMECORNERPRIZEROOM_MR_MIME_COINS EQU 3333
+CELADONGAMECORNERPRIZEROOM_BULBASAUR_COINS   EQU 5000
+CELADONGAMECORNERPRIZEROOM_CHARMANDER_COINS   EQU 5000
+CELADONGAMECORNERPRIZEROOM_SQUIRTLE_COINS   EQU 5000
 CELADONGAMECORNERPRIZEROOM_EEVEE_COINS   EQU 6666
 CELADONGAMECORNERPRIZEROOM_PORYGON_COINS EQU 9999
 
@@ -136,7 +139,10 @@ CeladonGameCornerPrizeRoomPokemonVendor:
 	closewindow
 	ifequal 1, .MrMime
 	ifequal 2, .Eevee
-	ifequal 3, .Porygon
+	ifequal 3, .Bulbasaur
+	ifequal 4, .Charmander
+	ifequal 5, .Squirtle
+	ifequal 6, .Porygon
 	sjump CeladonPrizeRoom_CancelPurchaseScript
 
 .MrMime:
@@ -175,6 +181,60 @@ CeladonGameCornerPrizeRoomPokemonVendor:
 	takecoins CELADONGAMECORNERPRIZEROOM_EEVEE_COINS
 	sjump .loop
 
+.Bulbasaur:
+	checkcoins CELADONGAMECORNERPRIZEROOM_BULBASAUR_COINS
+	ifequal HAVE_LESS, CeladonPrizeRoom_notenoughcoins
+	readvar VAR_PARTYCOUNT
+	ifequal PARTY_LENGTH, CeladonPrizeRoom_notenoughroom
+	getmonname STRING_BUFFER_3, BULBASAUR
+	scall CeladonPrizeRoom_askbuy
+	iffalse CeladonPrizeRoom_CancelPurchaseScript
+	waitsfx
+	playsound SFX_TRANSACTION
+	writetext CeladonPrizeRoom_HereYouGoText
+	waitbutton
+	setval BULBASAUR
+	special GameCornerPrizeMonCheckDex
+	givepoke BULBASAUR, 15
+	takecoins CELADONGAMECORNERPRIZEROOM_BULBASAUR_COINS
+	sjump .loop
+
+.Charmander:
+	checkcoins CELADONGAMECORNERPRIZEROOM_CHARMANDER_COINS
+	ifequal HAVE_LESS, CeladonPrizeRoom_notenoughcoins
+	readvar VAR_PARTYCOUNT
+	ifequal PARTY_LENGTH, CeladonPrizeRoom_notenoughroom
+	getmonname STRING_BUFFER_3, CHARMANDER
+	scall CeladonPrizeRoom_askbuy
+	iffalse CeladonPrizeRoom_CancelPurchaseScript
+	waitsfx
+	playsound SFX_TRANSACTION
+	writetext CeladonPrizeRoom_HereYouGoText
+	waitbutton
+	setval CHARMANDER
+	special GameCornerPrizeMonCheckDex
+	givepoke CHARMANDER, 15
+	takecoins CELADONGAMECORNERPRIZEROOM_CHARMANDER_COINS
+	sjump .loop
+
+.Squirtle:
+	checkcoins CELADONGAMECORNERPRIZEROOM_SQUIRTLE_COINS
+	ifequal HAVE_LESS, CeladonPrizeRoom_notenoughcoins
+	readvar VAR_PARTYCOUNT
+	ifequal PARTY_LENGTH, CeladonPrizeRoom_notenoughroom
+	getmonname STRING_BUFFER_3, SQUIRTLE
+	scall CeladonPrizeRoom_askbuy
+	iffalse CeladonPrizeRoom_CancelPurchaseScript
+	waitsfx
+	playsound SFX_TRANSACTION
+	writetext CeladonPrizeRoom_HereYouGoText
+	waitbutton
+	setval SQUIRTLE
+	special GameCornerPrizeMonCheckDex
+	givepoke SQUIRTLE, 15
+	takecoins CELADONGAMECORNERPRIZEROOM_SQUIRTLE_COINS
+	sjump .loop
+
 .Porygon:
 	checkcoins CELADONGAMECORNERPRIZEROOM_PORYGON_COINS
 	ifequal HAVE_LESS, CeladonPrizeRoom_notenoughcoins
@@ -201,9 +261,12 @@ CeladonGameCornerPrizeRoomPokemonVendor:
 
 .MenuData:
 	db STATICMENU_CURSOR ; flags
-	db 4 ; items
+	db 7 ; items
 	db "MR.MIME    {d:CELADONGAMECORNERPRIZEROOM_MR_MIME_COINS}@"
 	db "EEVEE      {d:CELADONGAMECORNERPRIZEROOM_EEVEE_COINS}@"
+	db "BULBASAUR  {d:CELADONGAMECORNERPRIZEROOM_BULBASAUR_COINS}@"
+	db "CHARMANDER {d:CELADONGAMECORNERPRIZEROOM_CHARMANDER_COINS}@"
+	db "SQUIRTLE   {d:CELADONGAMECORNERPRIZEROOM_SQUIRTLE_COINS}@"
 	db "PORYGON    {d:CELADONGAMECORNERPRIZEROOM_PORYGON_COINS}@"
 	db "CANCEL@"
 
